@@ -1,6 +1,6 @@
 # aXe Developer Guide
 
-aXe runs a series of tests to check for accessibility of content and functionality on a website. A test is made up of a series of Rules which are, themselves, made up of Checks. aXe executes these Rules asynchronously and, when the Rules are finished running, runs a callback function which is passed a Result structure. Since some Rules run on the page level while others do not, tests will also run in one of two ways. If a document is specified, the page level rules will run, otherwise they will not.
+aXe runs a series of tests to check for accessibility of content and functionality on a website. A test is made up of a series of Rules which are, themselves, made up of Checks. aXe executes these Rules asynchronously; when the Rules are finished running, aXe runs a callback function which is passed a Result structure. Since some Rules run on the page level while others do not, tests will also run in one of two ways: if a document is specified, the page level rules will run, otherwise they will not.
 
 ## Getting Started
 
@@ -20,7 +20,7 @@ To build axe.js, simply run `grunt build`.  axe.js and axe.min.js are placed int
 
 To run all tests from the command line you can run `grunt test`, which will run all unit and integration tests using PhantomJS.
 
-You can also load tests in any supported browser, which is helpful for debugging.  Tests require a local server to run, you must first start a local server to serve files.  You can use Grunt to start one by running `grunt connect watch`.  Once your local server is running you can load the following pages in any browser to run tests:
+You can also load tests in any supported browser, which is helpful for debugging.  Tests require a local server to run, you must first start a local server to serve files.  You can use Grunt to start one by running `grunt connect watch`.  Once your local server is running, you can load the following pages in any browser to run tests:
 
 1.  [Core Tests](http://localhost:9876/test/core/)
 2.  [Commons Tests](http://localhost:9876/test/commons/)
@@ -28,15 +28,13 @@ You can also load tests in any supported browser, which is helpful for debugging
 4.  [Integration Tests](http://localhost:9876/test/integration/rules/)
 5.  There are additional tests located in [test/integration/full/](http://localhost:9876/test/integration/full/) for tests that need to be run against their own document.
 
-
 ## Architecture Overview
 
-aXe tests for accessibility using objects called Rules. Each Rule tests for a high-level aspect of accessibility, such as color contrast, button labels, and alternate text for images. Each rule is made up of a series of Checks. Depending on the rule; all, some, or none of these checks must pass in order for the rule to pass.
+aXe tests for accessibility using objects called Rules. Each Rule tests for a high-level aspect of accessibility such as color contrast, button labels, and alternate text for images. Each rule is made up of a series of Checks. Depending on the rule, all, some, or none of these checks must pass in order for the rule to pass.
 
-Upon execution, a Rule runs each of its Checks against all relevant nodes. Which nodes are relevant is determined by the Rule's `selector` property and `matches` function.  A Check can also further limit which nodes it applies to by specifying a `selector` property or `matches` function.  If a Rule has no Checks that apply to a given node, the Rule will neither pass or fail.
+Upon execution, a Rule runs each of its Checks against all relevant nodes. Which nodes are relevant is determined by the Rule's `selector` property and `matches` function.  A Check can also further limit which nodes it applies to by specifying a `selector` property or `matches` function.  If a Rule has no Checks that apply to a given node, the Rule will neither pass nor fail.
 
 After execution, a Check will return `true` or `false` depending on whether or not the tested condition was satisfied. The result, as well as more information on what caused the Check to pass or fail, will be stored in either the `passes` array or the `violations` array.
-
 
 ### Rules
 
@@ -61,11 +59,11 @@ The `any`, `all` and `none` arrays must contain either a `String` which referenc
 * `id` - `String` The unique ID of the Check.
 * `options` - `Mixed` Any options the Check requires that are specific to the Rule.
 
-There is a Grunt target which will ensure each Rule has a valid format, which can be run with `grunt validate`.
+There is a Grunt target that will ensure each Rule has a valid format; the target can be run with `grunt validate`.
 
 #### Matches Function
 
-Custom `matches` functions are executed against each node which matches the Rule's `selector` and receive a single parameter named `node`, which is the Node to test.  The function must return either `true` or `false`.  Common functions are provided as `commons`. [See the data-table matches function for an example.](../lib/rules/data-table-matches.js)
+Custom `matches` functions are executed against each node that matches the Rule's `selector`. The functions receive a single parameter named `node`, which is the Node to test.  The function must return either `true` or `false`.  Common functions are provided as `commons`. [See the data-table matches function for an example.](../lib/rules/data-table-matches.js)
 
 ### Checks
 
@@ -89,7 +87,7 @@ A Check's evaluate function is run a special context in order to give access to 
 The following variables are defined for `Check#evaluate`:
 
 * `node` - `HTMLElement`  The element that the Check is run against
-* `options` - `Mixed`  Any options specific to this Check that may be necessary.  If not specified by the user at run-time or configure-time; it will use `options` as defined by the Check's JSON file.
+* `options` - `Mixed`  Any options specific to this Check that may be necessary.  If not specified by the user at run-time or configure-time, it will use `options` as defined by the Check's JSON file.
 * `this.data()` - `Function`  Free-form data that either the Check message requires or is presented as `data` in the CheckResult object.  Subsequent calls to `this.data()` will overwrite previous.  See [aria-valid-attr](../lib/checks/aria/valid-attr.js) for example usage.
 * `this.relatedNodes()` - `Function`  Array or NodeList of elements that are related to this Check.  For example the [duplicate-id](../lib/checks/shared/duplicate-id.js) Check will add all Elements which share the same ID.
 * `commons` - Common functions that may be used across multiple Checks.  See [Common Functions](#common-functions) for more information.
